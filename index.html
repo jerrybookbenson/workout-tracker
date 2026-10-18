@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  WORKOUT TRACKER  -  wrapper page  (index.html)
+  ============================================================================
+  This page does one job: it shows your Apps Script app full-screen. Being its
+  own page lets Chrome treat it as an installable app (it reads manifest.webmanifest
+  and sw.js, which sit next to this file).
+
+  THE ONLY THING YOU EDIT: paste your Apps Script Web app URL on the APP_URL line
+  near the bottom of this file. It ends in /exec.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Workout Tracker</title>
+  <meta name="theme-color" content="#1b1d21">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <style>
+    html, body { margin: 0; height: 100%; background: #1b1d21; color: #f1efe9;
+                 font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #1b1d21; }
+    .msg { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+           padding: 32px; text-align: center; background: #1b1d21; color: #9aa2ad; }
+    .msg.show { display: flex; }
+  </style>
+</head>
+<body>
+  <iframe id="app" title="Workout Tracker" hidden></iframe>
+  <p class="msg" id="msg"></p>
+
+  <script>
+    // ---- PASTE YOUR APPS SCRIPT WEB APP URL BETWEEN THE QUOTES (it ends in /exec) ----
+    var APP_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+    // ------------------------------------------------------------------------------
+
+    var frame = document.getElementById("app");
+    var msg = document.getElementById("msg");
+
+    function say(text) { msg.textContent = text; msg.classList.add("show"); }
+
+    if (APP_URL.indexOf("https://script.google.com/") !== 0) {
+      say("Open index.html in your GitHub repository and paste your Apps Script Web app URL on the APP_URL line.");
+    } else if (!navigator.onLine) {
+      say("No connection. The app needs the internet to reach your sheet.");
+      window.addEventListener("online", function () { location.reload(); });
+    } else {
+      frame.src = APP_URL;
+      frame.hidden = false;
+    }
+
+    // Lets Chrome offer "Install app".
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
+    }
+  </script>
+</body>
+</html>
